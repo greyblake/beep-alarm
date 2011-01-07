@@ -34,13 +34,13 @@
 #     -t        tempo, default is 120
 #     -m        number of tune(melody)
 # TUNES:
-#     0         Kanlinka(russian song)
-#     1         Kino - Pachka Sigaret 
-#     2         Kino - Blood Type
-#     3         Metallica - Unforgiven
-#     4         Led Zeppelin - Stairway To Heaven
-#     5         Papa Roach - Last Resort
-#     6         Helloween - Power
+#      0        Kanlinka(russian song)
+#      1        Kino - Pachka Sigaret 
+#      2        Kino - Blood Type
+#      3        Metallica - Unforgiven
+#      4        Led Zeppelin - Stairway To Heaven
+#      5        Papa Roach - Last Resort
+#      6        Helloween - Power
 # EXAMPLES:
 #     beep-alarm 08:00 -r 20
 #     beep-alarm 08:00 -f $HOME/nokia_music/kalinka.txt
@@ -173,7 +173,7 @@ TUNES[6]="8e2 8d2 8d2 8c2 8b1 8a1 8b1 8c2 8f1 8e2 8d2 8- 8- 8d2 8c2 8b1 8a1 8g1 
 REPEAT=10
 TIME=0
 TEMPO=120
-TUNE_NUM=0
+TUNE=$TUNES[0]
 
 # parse options
 if [[ $1 =~ ":" ]]; then
@@ -191,7 +191,7 @@ do
         t)
             TEMPO=$OPTARG;;
         m)
-            TUNE_NUM=$OPTARG;;
+            TUNE=${TUNES[$OPTARG]};;
         ?)
             case $BASH_ARGV in
                 -h|--help)
@@ -214,5 +214,5 @@ done
 
 # play a tune
 for((i=$REPEAT; i != 0; i--)); do
-    play_tune ${TUNES[$TUNE_NUM]}
+    play_tune $TUNE
 done
