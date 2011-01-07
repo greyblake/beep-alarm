@@ -21,6 +21,7 @@ Options:
 * `-f` - file with tune in Nokia format
 * `-t` - tempo, default is 120
 * `-m` - number of tune(melody)
+* `-o` - up or down keynote, takes number of semitones
 
 Tunes:
 
