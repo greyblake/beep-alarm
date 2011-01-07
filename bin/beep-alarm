@@ -33,6 +33,7 @@
 #     -f        file with tune in Nokia format
 #     -t        tempo, default is 120
 #     -m        number of tune(melody)
+#     -o        up or down keynote, takes number of semitones
 # TUNES:
 #      0        Kalinka(russian song)
 #      1        Kino - Pachka Sigaret 
@@ -42,9 +43,14 @@
 #      5        Papa Roach - Last Resort
 #      6        Helloween - Power
 # EXAMPLES:
-#     beep-alarm 08:00 -r 20
-#     beep-alarm 08:00 -f $HOME/nokia_music/kalinka.txt
-#     beep-alarm -t 150 -m 1
+#     Play at 8 a.m. 20 times:
+#         beep-alarm 08:00 -r 20
+#     Play at 8 a.m. music from file:
+#         beep-alarm 08:00 -f $HOME/nokia_music/kalinka.txt
+#     Play right now with tempo=150 "Kino - Pachka Sigaret"
+#         beep-alarm -t 150 -m 1
+#     Play one time, one octave lower than usual(an octave is 12 semitones)
+#         beep-alarm -r 1 -o -12
 
 function play_tune(){
     function play_note(){
@@ -86,9 +92,23 @@ function play_tune(){
             # calculate freqency for neccessary octave
             local freq=$[freq_4 / 2**(4-octave)]
 
+            local offset=$OFFSET
+
             # add semitone if sharp exists
             if [[ $item =~ "#" ]]; then
-                freq=$[freq * 10594 / 10000]
+                offset=$[offset+1]
+            fi
+
+
+            # calculate frequencies with offset
+            if [ $offset -gt 0 ]; then
+                for((i=0; i<offset; i++)); do
+                    freq=$[freq * 10594 / 10000]
+                done
+            elif [ $offset -lt 0 ]; then
+                for((i=0; i>offset; i--)); do
+                    freq=$[freq * 10000 / 10594 ]
+                done
             fi
 
             echo $freq
@@ -153,7 +173,7 @@ function format_time(){
 }
 
 function print_help(){
-    cat $0 | grep "^# [U]SAGE:" --color=never -A 22 | tr '#' ' '
+    cat $0 | grep "^# [U]SAGE:" --color=never -A 29 | tr '#' ' '
 }
 
 function print_version(){
@@ -174,6 +194,7 @@ REPEAT=10
 TIME=0
 TEMPO=120
 TUNE=$TUNES[0]
+OFFSET=0
 
 # parse options
 if [[ $1 =~ ":" ]]; then
@@ -181,7 +202,7 @@ if [[ $1 =~ ":" ]]; then
     shift
 fi
 OPTERR=0  # silent mode for getopts
-while getopts "r:f:t:m:" OPTION
+while getopts "r:f:t:m:o:" OPTION
 do
     case $OPTION in
         r)
@@ -192,6 +213,8 @@ do
             TEMPO=$OPTARG;;
         m)
             TUNE=${TUNES[$OPTARG]};;
+        o)
+            OFFSET=$OPTARG;;
         ?)
             case $BASH_ARGV in
                 -h|--help)

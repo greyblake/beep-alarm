@@ -4,7 +4,7 @@ by Sergey Potapov (aka Blake)
 ## Intro 
 
 By some reason I have no audio centre at the moment and my mobile can not make me awake.
-So I decided to create this simple tool to wake up me. It is an alarm which uses a speaker to play music.
+So I decided to create this simple tool to wake me up. It is an alarm which uses a speaker to play music.
 
 ## Requirements
 
